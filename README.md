@@ -14,3 +14,6 @@ pip install "prodigy-lunr @ git+https://github.com/explosion/prodigy-lunr"
 
 To learn more about this plugin, you can check the [Prodigy docs](https://prodi.gy/docs/plugins/#lunr).
 
+## Issues? 
+
+Are you have trouble with this plugin? Let us know on our [support forum](https://support.prodi.gy/) and we'll get back to you! 
