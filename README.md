@@ -4,7 +4,7 @@
 
 ![](images/approach.png)
 
-This repository contains a Prodigy plugin for recipes that use [lunr]() as a lightweight search engine to fetch relevant subsets of the data to curate. 
+This repository contains a Prodigy plugin for recipes that use [lunr](https://lunr.readthedocs.io/en/latest/) as a lightweight search engine to fetch relevant subsets of the data to curate. 
 
 You can install this plugin via `pip`. 
 
