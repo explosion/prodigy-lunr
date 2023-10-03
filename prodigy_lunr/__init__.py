@@ -1,10 +1,8 @@
 from tempfile import NamedTemporaryFile
-import itertools as it
 from pathlib import Path
-from typing import List, Optional, Dict
+from typing import Optional
 
 import srsly
-from tqdm import tqdm
 
 from prodigy import recipe
 from prodigy.recipes.textcat import manual as textcat_manual
