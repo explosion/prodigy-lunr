@@ -12,5 +12,5 @@ You can install this plugin via `pip`.
 pip install "prodigy-lunr @ git+https://github.com/explosion/prodigy-lunr"
 ```
 
-To learn more about this plugin, you can check the [Prodigy docs]().
+To learn more about this plugin, you can check the [Prodigy docs](https://prodi.gy/docs/plugins/#lunr).
 
