@@ -70,7 +70,7 @@ def fetch(source: Path, index_path: Path, out_path: Path, query:str, n:int=200):
     exclusive=("Labels are exclusive", "flag", "e", bool),
     # fmt: on
 )
-def textcat_ann_manual(
+def textcat_lunr_manual(
     dataset: str,
     examples: Path,
     index_path: Path,
@@ -97,7 +97,7 @@ def textcat_ann_manual(
     exclusive=("Labels are exclusive", "flag", "e", bool),
     # fmt: on
 )
-def ner_ann_manual(
+def ner_lunr_manual(
     dataset: str,
     nlp: str,
     examples: Path,
@@ -126,7 +126,7 @@ def ner_ann_manual(
     exclusive=("Labels are exclusive", "flag", "e", bool),
     # fmt: on
 )
-def spans_ann_manual(
+def spans_lunr_manual(
     dataset: str,
     nlp: str,
     examples: Path,
