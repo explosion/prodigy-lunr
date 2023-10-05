@@ -93,8 +93,8 @@ def textcat_lunr_manual(
     examples=("Examples that have been indexed", "positional", None, str),
     index_path=("Path to trained index", "positional", None, Path),
     labels=("Comma seperated labels to use", "option", "l", str),
-    patterns=("Path to match patterns file", "option", "pt", Path),
     query=("ANN query to run", "option", "q", str),
+    patterns=("Path to match patterns file", "option", "pt", Path),
     # fmt: on
 )
 def ner_lunr_manual(
@@ -103,8 +103,8 @@ def ner_lunr_manual(
     examples: Path,
     index_path: Path,
     labels:str,
-    patterns: Optional[Path] = None,
     query:str,
+    patterns: Optional[Path] = None,
 ):
     """Run ner.manual using a query to populate the stream."""
     with NamedTemporaryFile(suffix=".jsonl") as tmpfile:
@@ -121,8 +121,8 @@ def ner_lunr_manual(
     examples=("Examples that have been indexed", "positional", None, str),
     index_path=("Path to trained index", "positional", None, Path),
     labels=("Comma seperated labels to use", "option", "l", str),
-    patterns=("Path to match patterns file", "option", "pt", Path),
     query=("ANN query to run", "option", "q", str),
+    patterns=("Path to match patterns file", "option", "pt", Path),
     # fmt: on
 )
 def spans_lunr_manual(
@@ -131,8 +131,8 @@ def spans_lunr_manual(
     examples: Path,
     index_path: Path,
     labels:str,
-    patterns: Optional[Path] = None,
     query:str,
+    patterns: Optional[Path] = None,
 ):
     """Run spans.manual using a query to populate the stream."""
     with NamedTemporaryFile(suffix=".jsonl") as tmpfile:
