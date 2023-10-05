@@ -39,7 +39,7 @@ jobs:
       - name: Run ruff
         if: always()
         shell: bash
-        run: python -m ruff prodigy tests
+        run: python -m ruff prodigy_lunr tests
 
       - name: Run pytest
         if: always()
