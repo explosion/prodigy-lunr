@@ -36,6 +36,12 @@ jobs:
           pip install -e .
           pip install ruff pytest
       
+      - name: Run help
+        if: always()
+        shell: bash
+        run: |
+          python -m prodigy --help
+      
       - name: Run ruff
         if: always()
         shell: bash
