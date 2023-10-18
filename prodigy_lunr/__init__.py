@@ -110,7 +110,7 @@ def ner_lunr_manual(
     with NamedTemporaryFile(suffix=".jsonl") as tmpfile:
         fetch(examples, index_path, out_path=tmpfile.name, query=query)
         stream = list(srsly.read_jsonl(tmpfile.name))
-        ner_manual(dataset, nlp, stream, label=labels, patterns=patterns)
+        return ner_manual(dataset, nlp, stream, label=labels, patterns=patterns)
 
 
 @recipe(
@@ -138,4 +138,4 @@ def spans_lunr_manual(
     with NamedTemporaryFile(suffix=".jsonl") as tmpfile:
         fetch(examples, index_path, out_path=tmpfile.name, query=query)
         stream = list(srsly.read_jsonl(tmpfile.name))
-        spans_manual(dataset, nlp, stream, label=labels, patterns=patterns)
+        return spans_manual(dataset, nlp, stream, label=labels, patterns=patterns)
