@@ -1,14 +1,15 @@
+import pytest
 import srsly
 from pathlib import Path 
 from prodigy_lunr import index, fetch, spans_lunr_manual, textcat_lunr_manual, ner_lunr_manual
 
 
-def test_smoke(tmpdir):
+@pytest.mark.parametrize("query", ["download", "query", "benchmark"])
+def test_smoke(tmpdir, query):
     """Just a minimum viable smoketest."""
     examples_path = Path("tests/datasets/new-dataset.jsonl")
     index_path = tmpdir / "new-dataset.gz.jsonl"
     fetch_path = tmpdir / "fetched.jsonl"
-    query = "benchmarks"
 
     # Ensure fetch works as expected
     index(examples_path, index_path)
