@@ -6,7 +6,7 @@ from prodigy_lunr import index, fetch, spans_lunr_manual, textcat_lunr_manual, n
 def test_smoke(tmpdir):
     """Just a minimum viable smoketest."""
     examples_path = Path("tests/datasets/new-dataset.jsonl")
-    index_path = tmpdir / "new-dataset.gz.json"
+    index_path = tmpdir / "new-dataset.gz.jsonl"
     fetch_path = tmpdir / "fetched.jsonl"
     query = "benchmarks"
 
