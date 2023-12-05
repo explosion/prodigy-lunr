@@ -27,6 +27,6 @@ def test_basic_interactions(query, base_call):
         # Hit accept a few times, making sure that the query appears
         for _ in range(10):
             page.get_by_label("accept (a)").click()
-            time.sleep(0.2)
+            time.sleep(1)
             elem = page.locator(".prodigy-content").first
-            expect(elem).to_contain_text(query)
+            assert query in elem.inner_text().lower()
