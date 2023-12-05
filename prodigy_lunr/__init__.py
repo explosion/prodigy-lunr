@@ -1,5 +1,4 @@
 import spacy 
-from tempfile import NamedTemporaryFile
 from pathlib import Path
 from typing import Optional
 
@@ -35,7 +34,7 @@ def index(source: Path, index_path: Path):
     source=("Path to text source that has been indexed", "positional", None, str),
     index_path=("Path to index", "positional", None, Path),
     out_path=("Path to write examples into", "positional", None, Path),
-    query=("ANN query to run", "option", "q", str),
+    query=("Query to run", "option", "q", str),
     n=("Max number of results to return", "option", "n", int),
     # fmt: on
 )
@@ -57,7 +56,7 @@ def fetch(source: Path, index_path: Path, out_path: Path, query:str, n:int=200):
     examples=("Examples that have been indexed", "positional", None, str),
     index_path=("Path to trained index", "positional", None, Path),
     labels=("Comma seperated labels to use", "option", "l", str),
-    query=("ANN query to run", "option", "q", str),
+    query=("Query to run", "option", "q", str),
     exclusive=("Labels are exclusive", "flag", "e", bool),
     n=("Number of items to retreive via query", "option", "n", int),
     allow_reset=("Allow the user to restart the query", "flag", "r", bool)
@@ -74,7 +73,7 @@ def textcat_lunr_manual(
     allow_reset: bool = False
 ):
     """Run textcat.manual using a query to populate the stream."""
-    log("RECIPE: Calling `textcat.ann.manual`")
+    log("RECIPE: Calling `textcat.lunr.manual`")
     index = SearchIndex(source=examples, index_path=index_path)
     stream = index.new_stream(query, n=n)
     components = textcat_manual(dataset, stream, label=labels.split(","), exclusive=exclusive)
@@ -103,7 +102,7 @@ def textcat_lunr_manual(
     examples=("Examples that have been indexed", "positional", None, str),
     index_path=("Path to trained index", "positional", None, Path),
     labels=("Comma seperated labels to use", "option", "l", str),
-    query=("ANN query to run", "option", "q", str),
+    query=("Query to run", "option", "q", str),
     patterns=("Path to match patterns file", "option", "pt", Path),
     n=("Number of items to retreive via query", "option", "n", int),
     allow_reset=("Allow the user to restart the query", "flag", "r", bool)
@@ -121,7 +120,7 @@ def ner_lunr_manual(
     allow_reset:bool = False,
 ):
     """Run ner.manual using a query to populate the stream."""
-    log("RECIPE: Calling `ner.ann.manual`")
+    log("RECIPE: Calling `ner.lunr.manual`")
     if "blank" in nlp:
         spacy_mod = spacy.blank(nlp.replace("blank:", ""))
     else:
@@ -154,7 +153,7 @@ def ner_lunr_manual(
     examples=("Examples that have been indexed", "positional", None, str),
     index_path=("Path to trained index", "positional", None, Path),
     labels=("Comma seperated labels to use", "option", "l", str),
-    query=("ANN query to run", "option", "q", str),
+    query=("Query to run", "option", "q", str),
     patterns=("Path to match patterns file", "option", "pt", Path),
     n=("Number of items to retreive via query", "option", "n", int),
     allow_reset=("Allow the user to restart the query", "flag", "r", bool)
@@ -172,7 +171,7 @@ def spans_lunr_manual(
     allow_reset: bool = False
 ):
     """Run spans.manual using a query to populate the stream."""
-    log("RECIPE: Calling `spans.ann.manual`")
+    log("RECIPE: Calling `spans.lunr.manual`")
     if "blank" in nlp:
         spacy_mod = spacy.blank(nlp.replace("blank:", ""))
     else:

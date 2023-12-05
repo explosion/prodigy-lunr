@@ -1,6 +1,6 @@
 import srsly 
 from pathlib import Path
-from typing import List, Optional, Callable, Literal, Dict
+from typing import List, Optional, Dict
 import textwrap
 from lunr import lunr
 from lunr.index import Index
@@ -21,7 +21,7 @@ HTML = """
 <details>
     <summary id="reset">Reset stream?</summary>
     <div class="prodigy-content">
-        <label class="label" for="query">New query for ANN:</label>
+        <label class="label" for="query">New query:</label>
         <input class="prodigy-text-input text-input" type="text" id="query" name="query" value="">
         <br><br>
         <button id="refreshButton" onclick="refreshData()">
@@ -100,14 +100,16 @@ class SearchIndex:
         log(f"INDEX: Using {index_path=} and source={str(source)}.")
         stream = get_stream(source)
         stream.apply(add_hashes)
+        # Storing this as a list isn't scale-able, but is fair enough for medium sized datasets.
+        self.documents = [ex for ex in stream]
         self.index_path = index_path
         self.index = None
-        if self.index_path.exists():
+        if self.index_path and self.index_path.exists():
             self.index = Index.load(srsly.read_gzip_json(index_path))
     
     def build_index(self) -> "SearchIndex":
         # Store sentences as a list, not perfect, but works.
-        documents = [{"idx": i, **ex} for i, ex in enumerate(self.stream)]
+        documents = [{"idx": i, 'text': ex['text']} for i, ex in enumerate(self.documents)]
         # Create the index
         self.index = lunr(ref='idx', fields=('text',), documents=documents)
         return self
