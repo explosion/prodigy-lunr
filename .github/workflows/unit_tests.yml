@@ -53,5 +53,5 @@ jobs:
         shell: bash
         run: |
           python -m pytest tests -m "not e2e"
-          # python -m pytest tests -m "e2e"
+          python -m pytest tests -m "e2e" -s
 

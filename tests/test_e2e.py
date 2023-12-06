@@ -32,4 +32,6 @@ def test_basic_interactions(query, base_call):
             # We check the entire container because we're interested in the meta information.
             # The retreived text may not have a perfect match for the query, but the meta should!
             elem = page.locator(".prodigy-container").first
+            print()
+            print(elem.inner_text())
             assert query in elem.inner_text().lower()
