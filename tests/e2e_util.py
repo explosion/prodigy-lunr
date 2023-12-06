@@ -10,7 +10,7 @@ from playwright.sync_api import sync_playwright
 
 from prodigy.util import msg
 
-PORT = 12345
+PORT = 1234
 BASE_URL = f"http://localhost:{PORT}"
 
 
