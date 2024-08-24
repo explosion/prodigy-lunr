@@ -151,14 +151,16 @@ class SearchIndex:
 def stream_reset_calback(index_obj: SearchIndex, n: int = 100):
     def stream_reset(ctrl: Controller, *, query: str):
         new_stream = Stream.from_iterable(index_obj.new_stream(query, n=n))
-        if new_stream.is_empty:
+        ctrl.reset_stream(new_stream, prepend_old_wrappers=True)
+        try:
+            next_item = next(ctrl.stream)
+        except StopIteration:
             log(f"INDEX: No examples found for query: {query}. Try a different one")
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
                 detail=f"No examples found for query: {query}. Try a different one",
             )
         else:
-            ctrl.reset_stream(new_stream, prepend_old_wrappers=True)
-            return next(new_stream)
+            return next_item
 
     return stream_reset
