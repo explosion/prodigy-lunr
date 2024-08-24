@@ -90,6 +90,7 @@ function refreshData() {
         console.log('Updating Current Example with new data:', response);
         window.prodigy.resetQueue();
         window.prodigy.update(response);
+        document.querySelector('#loadingIcon').style.display = 'none'
       }
     })
     .catch(err => {
