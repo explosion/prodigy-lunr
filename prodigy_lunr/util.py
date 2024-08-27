@@ -1,14 +1,15 @@
-import srsly 
-from pathlib import Path
-from typing import List, Optional, Dict
 import textwrap
+from pathlib import Path
+from typing import Dict, List, Optional
+
+import srsly
+from fastapi import HTTPException
 from lunr import lunr
 from lunr.index import Index
-from prodigy.util import set_hashes
-from prodigy.util import log
-from prodigy.components.stream import Stream
-from prodigy.components.stream import get_stream
+from prodigy.components.stream import Stream, get_stream
 from prodigy.core import Controller
+from prodigy.util import log, set_hashes
+from starlette.status import HTTP_400_BAD_REQUEST
 
 HTML = """
 <link
@@ -72,23 +73,34 @@ CSS = """
 
 JS = """
 function refreshData() {
-  document.querySelector('#loadingIcon').style.display = 'inline-block'
-  event_data = {
+  document.querySelector('#loadingIcon').style.display = 'inline-block';
+
+  const event_data = {
     query: document.getElementById("query").value
-  }
+  };
+
   window.prodigy
     .event('stream-reset', event_data)
-    .then(updated_example => {
-      console.log('Updating Current Example with new data:', updated_example)
-      window.prodigy.resetQueue();
-      window.prodigy.update(updated_example)
-      document.querySelector('#loadingIcon').style.display = 'none'
+    .then(response => {
+      if (response.status === 400) {
+        console.error('Error:', response.detail);
+        alert(response.detail || 'No examples found for the given query. Please try a different one.');
+        document.querySelector('#loadingIcon').style.display = 'none';
+      } else {
+        console.log('Updating Current Example with new data:', response);
+        window.prodigy.resetQueue();
+        window.prodigy.update(response);
+        document.querySelector('#loadingIcon').style.display = 'none'
+      }
     })
     .catch(err => {
-      console.error('Error in Event Handler:', err)
-    })
+      console.error('Error in Event Handler:', err);
+      alert(err.detail || "There's been an error in the stream update handler. See console for details.");
+      document.querySelector('#loadingIcon').style.display = 'none';
+    });
 }
 """
+
 
 def add_hashes(examples):
     for ex in examples:
@@ -106,35 +118,49 @@ class SearchIndex:
         self.index = None
         if self.index_path and self.index_path.exists():
             self.index = Index.load(srsly.read_gzip_json(index_path))
-    
+
     def build_index(self) -> "SearchIndex":
         # Store sentences as a list, not perfect, but works.
-        documents = [{"idx": i, 'text': ex['text']} for i, ex in enumerate(self.documents)]
+        documents = [
+            {"idx": i, "text": ex["text"]} for i, ex in enumerate(self.documents)
+        ]
         # Create the index
-        self.index = lunr(ref='idx', fields=('text',), documents=documents)
+        self.index = lunr(ref="idx", fields=("text",), documents=documents)
         return self
 
     def store_index(self, path: Path):
         srsly.write_gzip_json(str(self.index_path), self.index.serialize(), indent=0)
         log(f"INDEX: Index file stored at {path}.")
-    
-    def _to_prodigy_examples(self, examples: List[Dict], query:str):
+
+    def _to_prodigy_examples(self, examples: List[Dict], query: str):
         for res in examples:
-            ex = self.documents[int(res['ref'])]
-            ex['meta'] = {
-                'score': res['score'], 'query': query, "index_ref": int(res['ref'])
+            ex = self.documents[int(res["ref"])]
+            ex["meta"] = {
+                "score": res["score"],
+                "query": query,
+                "index_ref": int(res["ref"]),
             }
             yield set_hashes(ex)
 
-    def new_stream(self, query:str, n:int=100):
+    def new_stream(self, query: str, n: int = 100):
         log(f"INDEX: Creating new stream of {n} examples using {query=}.")
         results = self.index.search(query)[:n]
         return self._to_prodigy_examples(results, query=query)
 
 
-def stream_reset_calback(index_obj: SearchIndex, n:int=100):
+def stream_reset_calback(index_obj: SearchIndex, n: int = 100):
     def stream_reset(ctrl: Controller, *, query: str):
         new_stream = Stream.from_iterable(index_obj.new_stream(query, n=n))
         ctrl.reset_stream(new_stream, prepend_old_wrappers=True)
-        return next(ctrl.stream)
+        try:
+            next_item = next(ctrl.stream)
+        except StopIteration:
+            log(f"INDEX: No examples found for query: {query}. Try a different one")
+            raise HTTPException(
+                status_code=HTTP_400_BAD_REQUEST,
+                detail=f"No examples found for query: {query}. Try a different one",
+            )
+        else:
+            return next_item
+
     return stream_reset
